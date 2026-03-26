@@ -7,7 +7,7 @@ import {
   AlertCircle, Activity, Layout, Database,
   CheckCircle, Globe, ShieldCheck,
   Camera, Bell, Clipboard, BarChart2,
-  Menu, X
+  Menu, X, Play
 } from 'lucide-react';
 import './index.css';
 
@@ -151,6 +151,8 @@ const App = () => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dashboardMenuOpen, setDashboardMenuOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0); 
+
 
   const slides = [
     '/images/dashboard.png',
@@ -282,10 +284,16 @@ const App = () => {
     return (
       <div className="dash-layout-voltera">
         <aside className={`v-sidebar ${dashboardMenuOpen ? 'mobile-open' : ''}`}>
+          <div className="dash-sidebar-header">
+             <button onClick={() => setDashboardMenuOpen(false)} style={{ background: 'none', border: 'none', color: 'var(--voltera-text)' }}>
+               <X size={24} />
+             </button>
+          </div>
           <div className="v-logo">
             <img src={LOGO_PATH} alt="Logo" style={{ width: 22, height: 22, filter: theme === 'dark' ? 'brightness(3)' : 'none' }} />
             Factory AI
           </div>
+
           
           <nav className="v-nav">
             <div className={`v-nav-item ${dashTab === 'overview' ? 'active' : ''}`} onClick={() => { setDashTab('overview'); setDashboardMenuOpen(false); }}>
@@ -529,16 +537,32 @@ const App = () => {
       {mobileMenuOpen && (
         <motion.div 
           className="mobile-nav-overlay"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          <button onClick={toggleTheme} className="theme-toggle" style={{ margin: '0 auto 2rem' }}>
-            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          <button 
+            className="mobile-close-btn" 
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <X size={32} color="var(--text-dark)" />
           </button>
-          <button className="nav-cta" style={{ width: '100%' }} onClick={() => { setView('login'); setMobileMenuOpen(false); }}>Explore Platform</button>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', textAlign: 'center', marginTop: '2rem' }}>
+            <button onClick={() => { setView('landing'); setMobileMenuOpen(false); }} className="serif" style={{ background: 'none', border: 'none', fontSize: '1.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Home</button>
+            <button onClick={() => { setView('login'); setMobileMenuOpen(false); }} className="serif" style={{ background: 'none', border: 'none', fontSize: '1.8rem', color: 'var(--text-dark)', fontWeight: 600 }}>Login</button>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
+              <button onClick={toggleTheme} className="theme-toggle">
+                {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+              </button>
+            </div>
+            <button className="nav-cta" style={{ width: '100%', padding: '1.2rem' }} onClick={() => { setView('login'); setMobileMenuOpen(false); }}>Explore Platform</button>
+          </div>
         </motion.div>
       )}
+
+
 
       <section className="hero">
         <div className="hero-inner">
@@ -584,98 +608,120 @@ const App = () => {
         </div>
       </section>
 
-      <section id="problem" className="technology" style={{ background: 'var(--white)', padding: '5rem 0' }}>
+      <section id="problem" className="technology" style={{ padding: '10rem 0', background: 'var(--white)' }}>
         <div className="section-inner">
-          <div className="section-title reveal">
-            <h2 className="serif">Your Factory Has Blind Spots</h2>
-          </div>
-          <p className="section-subtitle reveal" style={{ marginBottom: '3rem' }}>
-            Human supervision is limited. AI oversight is constant.
-          </p>
+          <div className="blind-spots-grid reveal">
+            <div className="risk-card-stagger">
+              <div className="section-title" style={{ textAlign: 'left', marginBottom: '1rem' }}>
+                 <span className="label" style={{ color: 'var(--accent)', fontWeight: 800, letterSpacing: '0.2rem', textTransform: 'uppercase', marginBottom: '1rem', display: 'block' }}>The Problem</span>
+                 <h2 className="serif" style={{ fontSize: '3rem', lineHeight: 1.1 }}>Your Factory Has<br/>Blind Spots</h2>
+              </div>
+              
+              <motion.div className="risk-card" whileHover={{ x: 10 }}>
+                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                   <div style={{ padding: '0.8rem', background: 'var(--accent-soft)', borderRadius: '8px' }}>
+                      <AlertCircle color="var(--accent)" size={24} />
+                   </div>
+                   <div>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Undetected Safety Risks</h3>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Workers skip PPE and enter restricted zones. 60% of hazards go unnoticed until an incident occurs.</p>
+                   </div>
+                </div>
+              </motion.div>
 
-          <div className="tech-list" style={{ marginTop: '0' }}>
-            <div className="tech-item reveal" style={{ transitionDelay: '0.1s' }}>
-              <div className="tech-content">
-                <AlertCircle color="var(--accent)" size={32} style={{ marginBottom: '1.2rem' }} />
-                <h3>Undetected Safety Risks</h3>
-                <p>
-                  Workers skip PPE, enter restricted zones, and interact unsafely with machinery. 
-                  <b> 60% of safety violations</b> go unnoticed until an incident occurs.
-                </p>
-              </div>
-              <div className="tech-visual">
-                <img src="/images/hero-visual.png" alt="Safety Monitoring" />
-              </div>
+              <motion.div className="risk-card" whileHover={{ x: 10 }}>
+                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                   <div style={{ padding: '0.8rem', background: 'var(--accent-soft)', borderRadius: '8px' }}>
+                      <Activity color="var(--accent)" size={24} />
+                   </div>
+                   <div>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>Hidden Production Loss</h3>
+                      <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Machine downtime and bottlenecks silently erode output. Manufacturers lose 23% OEE on average.</p>
+                   </div>
+                </div>
+              </motion.div>
             </div>
 
-            <div className="tech-item reveal" style={{ transitionDelay: '0.2s' }}>
-              <div className="tech-visual" style={{ justifyContent: 'flex-start' }}>
-                <img src="/images/dashboard.png" alt="Production Loss" />
-              </div>
-              <div className="tech-content">
-                <Activity color="var(--accent)" size={32} style={{ marginBottom: '1.2rem' }} />
-                <h3>Hidden Production Losses</h3>
-                <p>
-                  Machine downtime, bottlenecks, and idle workstations silently erode output. 
-                  Manufacturers average <b>23% OEE loss</b> due to delayed operational visibility.
-                </p>
-              </div>
+            <div className="visual-risk-panel reveal">
+              <div className="risk-overlay">Live Analysis: Critical Risk</div>
+              <div className="scanner-line"></div>
+              <img src="/images/hero-visual.png" alt="Safety Monitoring" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="architecture-section">
+      <section className="process-section">
         <div className="section-inner">
-          <div className="arch-header reveal">
-            <span className="label">Architecture</span>
-            <h2 className="serif">Simple Architecture, <span>Powerful Results</span></h2>
-          </div>
+          <div className="process-grid reveal">
+            <div className="process-info">
+              <h2 className="serif">Reliable, Effective &<br/>Technically Advanced<br/>Architecture!</h2>
+              <p>
+                Factory Ai's vision intelligence is built on an enterprise foundation 
+                of Edge-first processing and sub-100ms analytics to replace 
+                manual supervision with 100% autonomous oversight.
+              </p>
+              <div className="process-nav">
+                <button 
+                  className={`nav-btn ${activeStep > 0 ? 'active' : ''}`}
+                  onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
+                  style={{ background: 'none' }}
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button 
+                  className={`nav-btn ${activeStep < 3 ? 'active' : ''}`}
+                  onClick={() => setActiveStep(prev => Math.min(3, prev + 1))}
+                  style={{ background: 'none' }}
+                >
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
 
-          <div className="arch-flow" style={{ marginBottom: '5rem' }}>
-            {[
-              { icon: <Camera size={38} strokeWidth={1.5} />, label: 'Cameras' },
-              { icon: <Cpu size={38} strokeWidth={1.5} />, label: 'AI Detection' },
-              { icon: <Bell size={38} strokeWidth={1.5} />, label: 'Alerts' },
-              { icon: <Clipboard size={38} strokeWidth={1.5} />, label: 'Tasks' },
-              { icon: <BarChart2 size={38} strokeWidth={1.5} />, label: 'Analytics' }
-            ].map((item, i) => (
-              <React.Fragment key={i}>
-                <div className="arch-item reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
-                  <div className="arch-icon">{item.icon}</div>
-                  <h4>{item.label}</h4>
+
+            <div className="step-row">
+              {[
+                { num: '01', label: 'Plug & Play\nSmart Cameras', detail: 'Connect our Edge GPUs to your existing CCTV or IP streams in minutes with zero downtime.' },
+                { num: '02', label: 'AI Detection\nat the Edge', detail: 'Our bleeding-edge models detect PPE, zone incursions, and unsafe acts with 98.4% precision.' },
+                { num: '03', label: 'Real-Time\nSafety Alerts', detail: 'Instant alerts sent to supervisors via Dashboard or Mobile, preventing incidents before they happen.' },
+                { num: '04', label: 'Actionable\nDeep Analytics', detail: 'Convert visual data into structured OEE and safety reports for 100% audit-ready compliance.' }
+              ].map((step, i) => (
+                <div key={i} className={`step-card ${activeStep === i ? 'active' : ''}`} onClick={() => setActiveStep(i)} style={{ cursor: 'pointer' }}>
+                  <div className="step-num">{step.num}</div>
+                  <div className="step-label" style={{ whiteSpace: 'pre-line' }}>{step.label}</div>
                 </div>
-                {i < 4 && <ChevronRight className="arch-arrow reveal" size={24} style={{ transitionDelay: `${i * 0.1 + 0.05}s` }} />}
-              </React.Fragment>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="arch-concept reveal">
-            <div className="arch-side text-right">
-              <div className="arch-node">
-                <h4>1. Plug & Play Cameras</h4>
-                <p>Integrate directly with your existing camera infrastructure effortlessly.</p>
-              </div>
-              <div className="arch-node">
-                <h4>2. AI Processing Edge</h4>
-                <p>Deploy bleeding-edge models locally or in the cloud for zero-latency detection.</p>
-              </div>
-            </div>
-            
-            <div className="arch-center">
-              <img src="/images/robotic-arm.png" alt="Intelligence Camera" style={{ width: '100%', maxWidth: 350, objectFit: 'contain' }} />
-            </div>
-
-            <div className="arch-side text-left">
-              <div className="arch-node">
-                <h4>3. Real-Time Alerts</h4>
-                <p>Instant safety and compliance notifications straight to your dashboard.</p>
-              </div>
-              <div className="arch-node">
-                <h4>4. Deep Analytics</h4>
-                <p>Comprehensive efficiency reports and actionable improvement metrics.</p>
-              </div>
-            </div>
+          <div className="reveal">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4 }}
+              >
+                <h3 className="process-summary serif">
+                  {[
+                    "We start with your current infrastructure to ensure zero friction.",
+                    "Autonomous oversight that never blinks or fatigue.",
+                    "Eliminate blind spots with sub-100ms response times.",
+                    "Turn every camera feed into a structured audit trail."
+                  ][activeStep]}
+                </h3>
+                <p className="process-detail">
+                  {[
+                    "We leverage your existing camera infrastructure, connecting natively to eliminate the need for costly hardware replacements. Our goal is to unify your factory data under a single, autonomous pane of glass.",
+                    "Our AI Edge Processing handles heavy computer vision tasks locally, ensuring your data never leaves your facility while maintaining extreme detection accuracy even for high-speed manufacturing lines.",
+                    "Transform from reactive to proactive. When a safety breach or bottleneck is detected, our system triggers autonomous protocols, alerting supervisors instantly and preventing costly downtime.",
+                    "Every detected event is logged as structured metadata, building a permanent, searchable visual database of your factory floor activity for easy 100% audit-ready compliance reporting."
+                  ][activeStep]}
+                </p>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </section>
@@ -728,29 +774,70 @@ const App = () => {
         </div>
       </section>
 
-      <section id="industries" className="core-systems" style={{ 
-        background: 'var(--white)',
-        backgroundImage: 'linear-gradient(rgba(243, 244, 246, 0.85), rgba(243, 244, 246, 0.85)), url(/images/hero-visual.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}>
+      <section id="industries" className="industry-v2">
         <div className="section-inner">
-          <div className="section-title reveal">
-            <h2 className="serif">Industry Applications</h2>
+          <div className="industry-v2-header reveal">
+            <div className="industry-v2-title-block">
+              <span className="industry-label">High Performance Services For Multiple Industries!</span>
+              <h2 className="serif">Customized Solutions That Fits Industry & Manufacturing Needs!</h2>
+              <p className="muted" style={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+                Factory Ai has been built on engineering excellence crafted through unstinted dedication 
+                to quality, innovation and a constant objective to serve the global market and decade 
+                young industry expertise through serving an impressive list of long-term clients with 
+                experience and expertise in multiple industries.
+              </p>
+            </div>
+            <div className="industry-v2-right">
+              <div className="industry-btns">
+                <div className="btn-glass"><Play size={16} fill="white" /> How Does It Work?</div>
+                <div className="btn-glass" style={{ background: 'none' }}>Check All Services <ChevronRight size={16} /></div>
+              </div>
+            </div>
           </div>
-          <div className="grid-responsive grid-3 gap-3 mt-4">
-             {[
-               { icon: <Globe size={24} />, title: 'FMCG Manufacturing', desc: 'Quality and packaging monitoring at high speeds.' },
-               { icon: <CheckCircle size={24} />, title: 'Food Processing', desc: 'Hygiene compliance and contamination prevention.' },
-               { icon: <ShieldCheck size={24} />, title: 'Pharmaceutical', desc: 'GMP compliance and cleanroom monitoring.' }
-             ].map((industry, i) => (
-               <div className="reveal" key={i} style={{ padding: '2.5rem', border: '1px solid #000', borderRadius: 20, background: 'transparent', backdropFilter: 'blur(5px)' }}>
-                 <div style={{ color: 'var(--accent)', marginBottom: '1.2rem' }}>{industry.icon}</div>
-                 <h4 className="serif" style={{ fontSize: '1.4rem', marginBottom: '0.8rem' }}>{industry.title}</h4>
-                 <p className="text-sm muted" style={{ lineHeight: 1.6 }}>{industry.desc}</p>
-               </div>
-             ))}
+
+          <div className="industry-v2-grid">
+            <div className="ind-card featured reveal">
+              <div className="ind-icon-wrap">
+                <Database size={48} strokeWidth={1.5} />
+              </div>
+              <h3 className="serif">FMCG Manufacturing</h3>
+              <p>
+                Optimize OEE on high-speed packaging lines. Detect quality shifts, 
+                labeling defects, and downtime root causes with sub-ms precision.
+              </p>
+              <div className="ind-arrow-btn"><ArrowRight size={20} /></div>
+            </div>
+
+            <div className="ind-card white reveal" style={{ transitionDelay: '0.1s' }}>
+              <div className="ind-img-circle">
+                <img src="/images/hero-visual.png" alt="Food Processing" />
+              </div>
+              <h3 className="serif">Food Processing</h3>
+              <p>
+                Enforce stringent hygiene protocols. Monitor PPE compliance and 
+                cleanroom integrity autonomously to prevent contamination.
+              </p>
+              <div className="ind-arrow-btn"><ArrowRight size={20} /></div>
+            </div>
+
+            <div className="ind-card white reveal" style={{ transitionDelay: '0.2s' }}>
+              <div className="ind-img-circle">
+                <img src="/images/camera.png" alt="Pharmaceutical" />
+              </div>
+              <h3 className="serif">Pharmaceutical</h3>
+              <p>
+                Maintain total GMP compliance with unalterable visual logs. 
+                Identify workflow deviations in cold chain or sterile environments.
+              </p>
+              <div className="ind-arrow-btn"><ArrowRight size={20} /></div>
+            </div>
+          </div>
+
+          <div className="reveal" style={{ textAlign: 'center', marginTop: '4rem' }}>
+            <p style={{ opacity: 0.8, fontSize: '1rem', color: 'var(--text-muted)' }}>
+              Empowering global manufacturing with autonomous vision intelligence and 100% audit-ready operations. 
+              <a href="#" style={{ color: 'var(--accent)', marginLeft: '1rem', fontWeight: 700, textDecoration: 'underline' }}>Schedule Platform Visit</a>
+            </p>
           </div>
         </div>
       </section>

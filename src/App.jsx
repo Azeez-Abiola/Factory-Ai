@@ -6,7 +6,8 @@ import {
   ArrowRight, ChevronRight, ChevronLeft, Sun, Moon,
   AlertCircle, Activity, Layout, Database,
   CheckCircle, Globe, ShieldCheck,
-  Camera, Bell, Clipboard, BarChart2
+  Camera, Bell, Clipboard, BarChart2,
+  Menu, X
 } from 'lucide-react';
 import { useScroll, useTransform } from 'framer-motion';
 import './index.css';
@@ -76,7 +77,7 @@ const WavyText = ({ text }) => {
   return (
     <motion.h1
       className="serif"
-      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem" }}
+      style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem", margin: 0 }}
       variants={container}
       initial="hidden"
       animate="visible"
@@ -119,6 +120,8 @@ const App = () => {
   const [dashTab, setDashTab] = useState('overview');
   const [showPass, setShowPass] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dashboardMenuOpen, setDashboardMenuOpen] = useState(false);
 
   const slides = [
     '/images/dashboard.png',
@@ -249,23 +252,23 @@ const App = () => {
   if (view === 'dashboard') {
     return (
       <div className="dash-layout-voltera">
-        <aside className="v-sidebar">
+        <aside className={`v-sidebar ${dashboardMenuOpen ? 'mobile-open' : ''}`}>
           <div className="v-logo">
             <img src={LOGO_PATH} alt="Logo" style={{ width: 22, height: 22, filter: theme === 'dark' ? 'brightness(3)' : 'none' }} />
             Factory AI
           </div>
           
           <nav className="v-nav">
-            <div className={`v-nav-item ${dashTab === 'overview' ? 'active' : ''}`} onClick={() => setDashTab('overview')}>
+            <div className={`v-nav-item ${dashTab === 'overview' ? 'active' : ''}`} onClick={() => { setDashTab('overview'); setDashboardMenuOpen(false); }}>
               <Layout size={18} /> Overview
             </div>
-            <div className={`v-nav-item ${dashTab === 'alerts' ? 'active' : ''}`} onClick={() => setDashTab('alerts')}>
+            <div className={`v-nav-item ${dashTab === 'alerts' ? 'active' : ''}`} onClick={() => { setDashTab('alerts'); setDashboardMenuOpen(false); }}>
               <AlertCircle size={18} /> Alerts & Incidents <span className="v-badge" style={{ background: 'var(--accent)', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.6rem', marginLeft: 'auto' }}>16</span>
             </div>
-            <div className={`v-nav-item ${dashTab === 'feeds' ? 'active' : ''}`} onClick={() => setDashTab('feeds')}>
+            <div className={`v-nav-item ${dashTab === 'feeds' ? 'active' : ''}`} onClick={() => { setDashTab('feeds'); setDashboardMenuOpen(false); }}>
               <Eye size={18} /> Camera Feeds
             </div>
-            <div className={`v-nav-item ${dashTab === 'reports' ? 'active' : ''}`} onClick={() => setDashTab('reports')}>
+            <div className={`v-nav-item ${dashTab === 'reports' ? 'active' : ''}`} onClick={() => { setDashTab('reports'); setDashboardMenuOpen(false); }}>
               <Database size={18} /> Reports & Logs
             </div>
             <div className="v-nav-item"><Activity size={18} /> Optimization</div>
@@ -288,9 +291,17 @@ const App = () => {
 
         <main className="v-main">
           <header className="v-header">
-            <div className="v-header-left">
-              <h1>
-                {dashTab === 'overview' && 'Intelligence Overview'}
+            <div className="v-header-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button 
+                className="dash-mobile-burger" 
+                onClick={() => setDashboardMenuOpen(!dashboardMenuOpen)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dark)' }}
+              >
+                {dashboardMenuOpen ? <X size={26} /> : <Menu size={26} />}
+              </button>
+              <div>
+                <h1>
+                  {dashTab === 'overview' && 'Intelligence Overview'}
                 {dashTab === 'alerts' && 'Alerts & Incidents'}
                 {dashTab === 'feeds' && 'Live Camera Feeds'}
                 {dashTab === 'reports' && 'Reports & Logs'}
@@ -301,8 +312,9 @@ const App = () => {
                 {dashTab === 'feeds' && 'Real-time AI-supervised vision streams.'}
                 {dashTab === 'reports' && 'Historical compliance and safety documentation.'}
               </p>
+              </div>
             </div>
-            <div className="v-search">
+            <div className="v-search hide-mobile">
               <Eye size={16} style={{ opacity: 0.4 }} />
               <input type="text" placeholder="Search systems..." />
             </div>
@@ -472,14 +484,32 @@ const App = () => {
             <span style={{ color: 'var(--text-dark)' }}>Factory Ai</span>
           </a>
 
-          <div className="nav-links-right">
+          <div className="nav-desktop">
             <button onClick={toggleTheme} className="theme-toggle">
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
             </button>
             <button className="nav-cta" onClick={() => setView('login')}>Explore Platform</button>
           </div>
+          
+          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            {mobileMenuOpen ? <X size={24} color="var(--text-dark)" /> : <Menu size={24} color="var(--text-dark)" />}
+          </button>
         </div>
       </nav>
+
+      {mobileMenuOpen && (
+        <motion.div 
+          className="mobile-nav-overlay"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <button onClick={toggleTheme} className="theme-toggle" style={{ margin: '0 auto 2rem' }}>
+            {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+          </button>
+          <button className="nav-cta" style={{ width: '100%' }} onClick={() => { setView('login'); setMobileMenuOpen(false); }}>Explore Platform</button>
+        </motion.div>
+      )}
 
       <section className="hero">
         <div className="hero-inner">
@@ -491,14 +521,12 @@ const App = () => {
             Autonomous Visual Intelligence
           </motion.div>
           
-          <div style={{ maxWidth: '900px', margin: '0 auto 1.5rem', lineHeight: 1.1 }}>
+          <div style={{ maxWidth: '900px', margin: '0 auto 1.5rem', lineHeight: 1.1, display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
             <WavyText text="AI That Watches Your Factory" />
-            <div style={{ marginTop: '0.5rem' }}>
-              <WavyText text="So You Don't Have To" />
-            </div>
+            <WavyText text="So You Don't Have To" />
           </div>
 
-          <p className="hero-sub reveal" style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
+          <p className="hero-sub reveal" style={{ marginBottom: '1.5rem' }}>
             Turn your factory into an AI-powered smart operation. Join manufacturers who are eliminating blind spots and building safer, smarter factories.
           </p>
 
@@ -569,26 +597,25 @@ const App = () => {
       <section className="architecture-section">
         <div className="section-inner">
           <div className="arch-header reveal">
-            <span className="label">Architecture</span>
-            <h2 className="serif">Simple Architecture, <span>Powerful Results</span></h2>
+            <h2 className="serif">Autonomous<br/>Manufacturing Platform</h2>
           </div>
 
-          <div className="arch-flow">
-            {[
-              { icon: <Camera size={38} strokeWidth={1.5} />, label: 'Cameras' },
-              { icon: <Cpu size={38} strokeWidth={1.5} />, label: 'AI Detection' },
-              { icon: <Bell size={38} strokeWidth={1.5} />, label: 'Alerts' },
-              { icon: <Clipboard size={38} strokeWidth={1.5} />, label: 'Tasks' },
-              { icon: <BarChart2 size={38} strokeWidth={1.5} />, label: 'Analytics' }
-            ].map((item, i) => (
-              <React.Fragment key={i}>
-                <div className="arch-item reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
-                  <div className="arch-icon">{item.icon}</div>
-                  <h4>{item.label}</h4>
-                </div>
-                {i < 4 && <ChevronRight className="arch-arrow reveal" size={24} style={{ transitionDelay: `${i * 0.1 + 0.05}s` }} />}
-              </React.Fragment>
-            ))}
+          <div className="arch-wireframe-grid reveal" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div className="arch-wireframe-col left-col">
+              {['RobFlow', 'RobVision', 'RobCo Studio', 'Modular Robots'].map((item, i) => (
+                <div key={i} className="arch-wireframe-label">{item}</div>
+              ))}
+            </div>
+            
+            <div className="arch-wireframe-center">
+              <img src="/images/robotic-arm.png" alt="Intelligence Core" style={{ width: '100%', maxWidth: 450, objectFit: 'contain' }} />
+            </div>
+
+            <div className="arch-wireframe-col right-col">
+              {['Machine Loading', 'Palletizing', 'Materials Handling', 'Finishing'].map((item, i) => (
+                <div key={i} className="arch-wireframe-label">{item}</div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -695,9 +722,15 @@ const App = () => {
           <motion.div className="reveal">
             <button className="btn-accent" onClick={() => setView('login')}>Get Started <ChevronRight size={16} /></button>
           </motion.div>
-          <div className="cta-image reveal">
+          <motion.div 
+            className="cta-image" 
+            initial={{ x: -100, opacity: 0 }} 
+            whileInView={{ x: 0, opacity: 1 }} 
+            viewport={{ once: true }} 
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
             <img src="/images/robotic-arm.png" alt="Robotics" />
-          </div>
+          </motion.div>
         </div>
       </section>
 

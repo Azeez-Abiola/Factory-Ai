@@ -11,9 +11,9 @@
   --dark: #111111;
   --text-dark: #1A1A1A;
   --text-muted: #6B6B6B;
-  --accent: #2E5BFF;
-  --accent-hover: #1A44E0;
-  --accent-soft: rgba(46, 91, 255, 0.08);
+  --accent: #ED0000;
+  --accent-hover: #CC0000;
+  --accent-soft: rgba(237, 0, 0, 0.08);
   --border-light: rgba(0,0,0,0.06);
   --border-dark: rgba(255,255,255,0.08);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
@@ -177,7 +177,7 @@ ul { list-style: none; }
   content: '';
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(rgba(46, 91, 255, 0.4) 2px, transparent 2px);
+  background-image: radial-gradient(rgba(237, 0, 0, 0.4) 2px, transparent 2px);
   background-size: 30px 30px;
   opacity: 1;
   pointer-events: none;
@@ -676,7 +676,7 @@ ul { list-style: none; }
 
 .arch-item:hover .arch-icon {
   border-color: var(--accent);
-  box-shadow: 0 0 30px rgba(46, 91, 255, 0.15);
+  box-shadow: 0 0 30px rgba(237, 0, 0, 0.15);
   transform: translateY(-5px);
 }
 
@@ -702,7 +702,7 @@ ul { list-style: none; }
 :root {
   --voltera-bg: #F8F9FA;
   --voltera-side: #FFFFFF;
-  --voltera-accent: #2E5BFF;
+  --voltera-accent: #ED0000;
   --voltera-card: #FFFFFF;
   --voltera-border: rgba(0,0,0,0.08);
   --voltera-text: #111827;
@@ -713,7 +713,7 @@ ul { list-style: none; }
 [data-theme='dark'] {
   --voltera-bg: #0D0E11;
   --voltera-side: #000000;
-  --voltera-accent: #2E5BFF;
+  --voltera-accent: #ED0000;
   --voltera-card: #14161C;
   --voltera-border: rgba(255, 255, 255, 0.05);
   --voltera-text: #F9FAFB;
@@ -780,7 +780,7 @@ ul { list-style: none; }
 .v-nav-item.active {
   background: var(--voltera-accent);
   color: white;
-  box-shadow: 0 4px 12px rgba(46, 91, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(237, 0, 0, 0.2);
 }
 
 .v-main {

@@ -1625,6 +1625,26 @@ ul { list-style: none; }
   gap: 1rem;
 }
 
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--text-dark);
+  transition: all 0.3s var(--ease);
+}
+
+[data-theme='dark'] .theme-toggle {
+  background: #1A1B21;
+  color: white;
+  border-color: rgba(255,255,255,0.1);
+}
+
 .nav-btn {
   width: 45px;
   height: 45px;
@@ -1636,13 +1656,21 @@ ul { list-style: none; }
   cursor: pointer;
   transition: all 0.3s var(--ease);
   background: var(--card-bg);
+  color: var(--text);
+}
+
+[data-theme='dark'] .nav-btn {
+  border-color: rgba(255,255,255,0.1);
+  background: #1A1B21;
+  color: white;
 }
 
 .nav-btn.active {
-  background: var(--accent);
-  color: white;
-  border-color: var(--accent);
+  background: var(--accent) !important;
+  color: white !important;
+  border-color: var(--accent) !important;
 }
+
 
 .step-row {
   display: grid;

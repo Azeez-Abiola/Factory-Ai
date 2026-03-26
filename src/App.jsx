@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { 
   Eye, TrendingUp, Microscope, Users, 
   Shield, Zap, Cpu, Radio, Target, Lock,
@@ -9,7 +9,6 @@ import {
   Camera, Bell, Clipboard, BarChart2,
   Menu, X
 } from 'lucide-react';
-import { useScroll, useTransform } from 'framer-motion';
 import './index.css';
 
 /* ─────────────────────────────────────────────
@@ -90,6 +89,36 @@ const WavyText = ({ text }) => {
         </span>
       ))}
     </motion.h1>
+  );
+};
+
+const AnimatedHeroText = () => {
+  const words = ['Factory', 'Industry', 'Company'];
+  const colors = ['var(--accent)', 'var(--text-dark)', 'var(--accent)'];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [words.length]);
+
+  return (
+    <span style={{ display: 'inline-flex', minWidth: '5em', textAlign: 'left', marginLeft: '0.3rem', verticalAlign: 'middle', whiteSpace: 'nowrap' }}>
+      <AnimatePresence mode="popLayout">
+        <motion.span
+          key={index}
+          initial={{ y: 30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -30, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 120, damping: 14 }}
+          style={{ color: colors[index], display: 'inline-block' }}
+        >
+          {words[index]}
+        </motion.span>
+      </AnimatePresence>
+    </span>
   );
 };
 
@@ -522,7 +551,9 @@ const App = () => {
           </motion.div>
           
           <div style={{ maxWidth: '900px', margin: '0 auto 1.5rem', lineHeight: 1.1, display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-            <WavyText text="AI That Watches Your Factory" />
+            <motion.h1 className="serif" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "0.5rem", margin: 0 }}>
+              AI That Watches Your <AnimatedHeroText />
+            </motion.h1>
             <WavyText text="So You Don't Have To" />
           </div>
 
@@ -597,24 +628,53 @@ const App = () => {
       <section className="architecture-section">
         <div className="section-inner">
           <div className="arch-header reveal">
-            <h2 className="serif">Autonomous<br/>Manufacturing Platform</h2>
+            <span className="label">Architecture</span>
+            <h2 className="serif">Simple Architecture, <span>Powerful Results</span></h2>
           </div>
 
-          <div className="arch-wireframe-grid reveal" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <div className="arch-wireframe-col left-col">
-              {['RobFlow', 'RobVision', 'RobCo Studio', 'Modular Robots'].map((item, i) => (
-                <div key={i} className="arch-wireframe-label">{item}</div>
-              ))}
+          <div className="arch-flow" style={{ marginBottom: '5rem' }}>
+            {[
+              { icon: <Camera size={38} strokeWidth={1.5} />, label: 'Cameras' },
+              { icon: <Cpu size={38} strokeWidth={1.5} />, label: 'AI Detection' },
+              { icon: <Bell size={38} strokeWidth={1.5} />, label: 'Alerts' },
+              { icon: <Clipboard size={38} strokeWidth={1.5} />, label: 'Tasks' },
+              { icon: <BarChart2 size={38} strokeWidth={1.5} />, label: 'Analytics' }
+            ].map((item, i) => (
+              <React.Fragment key={i}>
+                <div className="arch-item reveal" style={{ transitionDelay: `${i * 0.1}s` }}>
+                  <div className="arch-icon">{item.icon}</div>
+                  <h4>{item.label}</h4>
+                </div>
+                {i < 4 && <ChevronRight className="arch-arrow reveal" size={24} style={{ transitionDelay: `${i * 0.1 + 0.05}s` }} />}
+              </React.Fragment>
+            ))}
+          </div>
+
+          <div className="arch-concept reveal">
+            <div className="arch-side text-right">
+              <div className="arch-node">
+                <h4>1. Plug & Play Cameras</h4>
+                <p>Integrate directly with your existing camera infrastructure effortlessly.</p>
+              </div>
+              <div className="arch-node">
+                <h4>2. AI Processing Edge</h4>
+                <p>Deploy bleeding-edge models locally or in the cloud for zero-latency detection.</p>
+              </div>
             </div>
             
-            <div className="arch-wireframe-center">
-              <img src="/images/robotic-arm.png" alt="Intelligence Core" style={{ width: '100%', maxWidth: 450, objectFit: 'contain' }} />
+            <div className="arch-center">
+              <img src="/images/robotic-arm.png" alt="Intelligence Camera" style={{ width: '100%', maxWidth: 350, objectFit: 'contain' }} />
             </div>
 
-            <div className="arch-wireframe-col right-col">
-              {['Machine Loading', 'Palletizing', 'Materials Handling', 'Finishing'].map((item, i) => (
-                <div key={i} className="arch-wireframe-label">{item}</div>
-              ))}
+            <div className="arch-side text-left">
+              <div className="arch-node">
+                <h4>3. Real-Time Alerts</h4>
+                <p>Instant safety and compliance notifications straight to your dashboard.</p>
+              </div>
+              <div className="arch-node">
+                <h4>4. Deep Analytics</h4>
+                <p>Comprehensive efficiency reports and actionable improvement metrics.</p>
+              </div>
             </div>
           </div>
         </div>
